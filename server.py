@@ -23,8 +23,6 @@ CREATE TABLE present  (
 
 connection.commit()
 
-
-
 valid_key = None
 app = FastAPI()
 
@@ -42,7 +40,7 @@ async def root(request: Request):
     if not key: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="key is null")
 
     # is teacher
-    if login == "!mn7*()" and password == "sa)d12(!":
+    if login == "2" and password == "2":
         valid_key = key
         return
 
@@ -58,6 +56,8 @@ async def root(request: Request):
             connection.commit()
         else: raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="wrong key")
     else: raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="wrong password")
+
+#отключаем бд + сервер
 @app.on_event("shutdown")
 def shotdown():
     connection.close()
