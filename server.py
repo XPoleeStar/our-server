@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 # database
 import sqlite3
 connection = sqlite3.connect('my_database.db')
@@ -23,8 +24,16 @@ CREATE TABLE present  (
 
 connection.commit()
 
-valid_key = None
 app = FastAPI()
+
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=["*"],
+  allow_methods=["*"],
+  allow_headers=["*"]
+)
+
+valid_key = None
 
 @app.post("/")
 async def root(request: Request):
@@ -40,7 +49,7 @@ async def root(request: Request):
     if not key: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="key is null")
 
     # is teacher
-    if login == "2" and password == "2":
+    if login == "xlogin" and password == "xpassword":
         valid_key = key
         return
 
@@ -56,8 +65,6 @@ async def root(request: Request):
             connection.commit()
         else: raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="wrong key")
     else: raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="wrong password")
-
-#отключаем бд + сервер
 @app.on_event("shutdown")
 def shotdown():
     connection.close()

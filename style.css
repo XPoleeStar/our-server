@@ -1,0 +1,222 @@
+/* УлГТУ QR interface — classic, responsive styling */
+
+#qrcode-container > *{
+  margin: auto;
+}
+
+.authorization {
+  display: flex;
+  justify-content: center;
+}
+
+:root {
+  color-scheme: light;
+  --page: #f4f0e8;
+  --paper: #fffdf8;
+  --panel: #eeeae1;
+  --ink: #3e3528;
+  --muted: #827765;
+  --line: #c9b99a;
+  --accent: #65533a;
+  --accent-hover: #4f412d;
+  --shadow: 0 18px 45px rgba(63, 49, 30, 0.09);
+}
+
+* { box-sizing: border-box; }
+
+html { min-height: 100%; }
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 28px 16px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 10% 5%, rgba(201, 185, 154, .18), transparent 30rem),
+    var(--page);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.app {
+  width: min(100%, 560px);
+  padding: clamp(22px, 5vw, 42px);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.header { text-align: center; }
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 10px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--accent);
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  line-height: 1;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 2.7rem);
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+
+.subtitle {
+  max-width: 360px;
+  margin: 9px auto 0;
+  color: var(--muted);
+  font-size: .92rem;
+  line-height: 1.5;
+}
+
+.header::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin: 24px auto;
+  background: var(--line);
+}
+
+.scanner-section { width: 100%; }
+
+.scanner-frame {
+  position: relative;
+  width: min(100%, 340px);
+  aspect-ratio: 1 / .82;
+  margin: 0 auto;
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid #b8ad9b;
+  border-radius: 8px;
+}
+
+.camera-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  border: 1px dashed #b8ad9b;
+  border-radius: 5px;
+}
+
+.camera-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  fill: none;
+  stroke: #81745e;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.camera-title {
+  margin: 0;
+  color: #6d6252;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.camera-hint {
+  max-width: 230px;
+  margin: 8px 0 0;
+  color: #8a7d6a;
+  font-family: Arial, sans-serif;
+  font-size: .78rem;
+  line-height: 1.5;
+}
+
+.corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--accent);
+  border-style: solid;
+}
+.corner-tl { top: 7px; left: 7px; border-width: 2px 0 0 2px; }
+.corner-tr { top: 7px; right: 7px; border-width: 2px 2px 0 0; }
+.corner-bl { bottom: 7px; left: 7px; border-width: 0 0 2px 2px; }
+.corner-br { bottom: 7px; right: 7px; border-width: 0 2px 2px 0; }
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.button {
+  min-height: 54px;
+  padding: 12px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  font: 600 .95rem/1.2 Arial, sans-serif;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease, transform .18s ease;
+}
+
+.button:focus-visible {
+  outline: 3px solid #b59a6b;
+  outline-offset: 3px;
+}
+
+.button:active { transform: translateY(1px); }
+
+.button-primary {
+  color: #fffdf8;
+  background: var(--accent);
+}
+.button-primary:hover { background: var(--accent-hover); }
+
+.button-secondary {
+  color: var(--accent);
+  background: transparent;
+}
+.button-secondary:hover { background: #f0e8da; }
+
+.button-icon {
+  font-family: Arial, sans-serif;
+  font-size: 1.25rem;
+}
+
+.footer {
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: .78rem;
+  letter-spacing: .04em;
+  text-align: center;
+}
+
+@media (max-width: 420px) {
+  body { padding: 14px 10px; }
+  .app { padding: 22px 16px; }
+  .actions { gap: 9px; }
+  .button { min-height: 50px; padding: 11px 8px; font-size: .84rem; }
+  .scanner-frame { aspect-ratio: 1 / .9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

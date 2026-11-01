@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f0e8">
+  <title>УлГТУ — QR-сканер</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <script defer src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script defer src="script.js"></script>
+  <main class="app">
+    <header class="header">
+      <div class="brand-mark" aria-hidden="true">⌗</div>
+      <h1>УлГТУ</h1>
+      <p class="subtitle">Ульяновский государственный технический университет</p>
+    </header>
+    <section class="scanner-section" aria-label="Область QR-сканера">
+      <div id="qrcode-container" class="scanner-frame">
+        <div class="camera-placeholder">
+          <svg class="camera-icon" viewBox="0 0 64 64" role="img" aria-label="Камера">
+            <path d="M10 21h10l5-7h14l5 7h10a5 5 0 0 1 5 5v22a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5V26a5 5 0 0 1 5-5Z"/>
+            <circle cx="32" cy="36" r="11"/>
+            <circle cx="49" cy="28" r="2"/>
+          </svg>
+          <p class="camera-title">Окно сканирования</p>
+          <p class="camera-hint">Здесь будет отображаться изображение с камеры</p>
+        </div>
+        <span class="corner corner-tl"></span>
+        <span class="corner corner-tr"></span>
+        <span class="corner corner-bl"></span>
+        <span class="corner corner-br"></span>
+      </div>
+    </section>
+
+    <div class="authorization">
+      <input id="user-login" type="text" placeholder="login"/>
+      <input id="user-password" type="text" placeholder="password"/> 
+    </div>
+
+    <nav class="actions" aria-label="Действия с QR-кодом">
+      <button id="scan-button" class="button button-primary" type="button">
+        <span class="button-icon" aria-hidden="true">⌗</span>
+        Сканировать
+      </button>
+      <button id="show-button" class="button button-secondary" type="button">
+        <span class="button-icon" aria-hidden="true">▦</span>
+        Показать
+      </button>
+    </nav>
+
+    <footer class="footer">Просто. Удобно. Для УлГТУ.</footer>
+  </main>
+</body>
+</html>
