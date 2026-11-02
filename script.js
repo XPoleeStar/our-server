@@ -1,7 +1,7 @@
 const server = "http://127.0.0.1:8000";
 
-const delay = 30;
-const times = 10;
+const delay = 3000;
+const times = 5;
 
 function generate() {
   return Math.random().toString(36).substring(2, 13);
@@ -14,7 +14,7 @@ const loginElement = document.getElementById("user-login");
 const passwordElement = document.getElementById("user-password");
 
 function sendKey(login, password, key) {
-  fetch(server, {
+  const promise = fetch(server, {
     method: "POST",
     headers: {
       "user-login": login,
@@ -28,11 +28,17 @@ function sendKey(login, password, key) {
       }
     }
   });
+  return promise;
 }
 
 document.getElementById("scan-button")
 .addEventListener("click", () => {
   container.innerHTML = placeholder;
+
+  if (!loginElement.value || !passwordElement.value) {
+    alert("укажите логин и пароль");
+    return;
+  }
 
   const scanner = new Html5Qrcode("qrcode-container");
   scanner.start(
@@ -50,6 +56,10 @@ document.getElementById("scan-button")
 
 document.getElementById("show-button")
 .addEventListener("click", () => {
+  if (!loginElement.value || !passwordElement.value) {
+      alert("укажите логин и пароль");
+      return;
+  }
   const key = generate();
   container.innerHTML = "";
   new QRCode(container, {text: key});

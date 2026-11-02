@@ -49,8 +49,9 @@ async def root(request: Request):
     if not key: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="key is null")
 
     # is teacher
-    if login == "xlogin" and password == "xpassword":
+    if login == "xl" and password == "x":
         valid_key = key
+        print(key)
         return
 
 #database
