@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS students (
     fullname TEXT NOT NULL,
     students_group TEXT NOT NULL,
     login TEXT NOT NULL PRIMARY KEY,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    public_key TEXT
 )
 ''')
 
@@ -62,10 +63,18 @@ async def root(request: Request):
         valid_key = key
         print(key)
         return{"I got the key"}
+    
+    signature = request.headers.get("user-signature")
+    if not signature: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="signature is null")
+
+    public_key = request.headers.get("user-public-key")
+    if not public_key: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="public_key is null")
+    print(public_key, signature)
 
 #database
     cursor.execute("SELECT password, fullname, students_group, login FROM students WHERE login = ?", (login,))
     result = cursor.fetchone()
+    cursor.execute("UPDATE students SET public_key = ? WHERE login = ? AND (public_key IS NULL OR public_key = '')", (public_key, login))
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="login not found")
     valid_password, fullname, group, students_login = result
@@ -86,3 +95,4 @@ def shutdown():
 )
     df.to_excel("result.xlsx", index=False)
     connection.close()
+    #send a mail
