@@ -2,6 +2,10 @@ from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd #ипорт в зеленую хуйню
 import os
+import base64
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import ec, utils
+from cryptography.exceptions import InvalidSignature
 
 # database
 import sqlite3
@@ -72,18 +76,41 @@ async def root(request: Request):
     print(public_key, signature)
 
 #database
-    cursor.execute("SELECT password, fullname, students_group, login FROM students WHERE login = ?", (login,))
+    cursor.execute("SELECT password, fullname, students_group, public_key, login FROM students WHERE login = ?", (login,))
     result = cursor.fetchone()
     cursor.execute("UPDATE students SET public_key = ? WHERE login = ? AND (public_key IS NULL OR public_key = '')", (public_key, login))
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="login not found")
-    valid_password, fullname, group, students_login = result
+    valid_password, fullname, group, public_key_b64, students_login = result
     if password == valid_password:
         if key == valid_key:
-            cursor.execute("INSERT INTO present(login, fullname, students_group) VALUES(?, ?, ?) ON CONFLICT(login) DO NOTHING", (students_login, fullname, group))
-            connection.commit()
+            verify_signature(public_key_b64, signature, key, login, fullname, group)  
         else: raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="wrong key")
     else: raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="wrong password")
+
+def verify_signature(public_key_b64: str, signature_b64: str, signed_data: str, login, fullname, group):
+
+    public_key_bytes = base64.b64decode(public_key_b64)
+    signature_bytes = base64.b64decode(signature_b64)
+
+    public_key = ec.EllipticCurvePublicKey.from_encoded_point(
+        curve=ec.SECP256R1(),
+        data=public_key_bytes
+    )
+
+    r = int.from_bytes(signature_bytes[:32], byteorder="big")
+    s = int.from_bytes(signature_bytes[32:], byteorder="big")
+    der_signature = utils.encode_dss_signature(r, s)
+    try:
+        public_key.verify(
+        signature=der_signature,
+        data=signed_data.encode("utf-8"),
+        signature_algorithm=ec.ECDSA(hashes.SHA256())
+        ) 
+        cursor.execute("INSERT INTO present(login, fullname, students_group) VALUES(?, ?, ?) ON CONFLICT(login) DO NOTHING", (login, fullname, group))
+        connection.commit()
+    except InvalidSignature: return 
+
 
 @app.on_event("shutdown")
 def shutdown():
