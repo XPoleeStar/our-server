@@ -55,26 +55,23 @@ async def root(request: Request):
     global valid_key
 
     login = request.headers.get("user-login")
-    if not login: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="login is null")
+    if not login: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Укажите логин")
 
     password = request.headers.get("user-password")
-    if not password: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="password is null")
+    if not password: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Укажите пароль")
 
     key = await request.body()
     if not key: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="key is null")
 
     # is teacher
-    if login == "x" and password == "x":
+    if login == os.getenv("TEACHER_LOGIN") and password == os.getenv("TEACHER_PASSWORD"):
         valid_key = key
-        print(key)
-        return{"I got the key"}
     
     signature = request.headers.get("user-signature")
     if not signature: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="signature is null")
 
     public_key = request.headers.get("user-public-key")
     if not public_key: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="public_key is null")
-    print(public_key, signature)
 
 #database
     cursor.execute("UPDATE students SET public_key = ? WHERE login = ? AND (public_key IS NULL OR public_key = '')", (public_key, login))
@@ -115,6 +112,24 @@ def verify_signature(public_key_b64: str, signature_b64: str, signed_data: str, 
         connection.commit()
     except InvalidSignature: return 
 
+@app.post("/recovery")
+async def recovery(request):
+    login = request.headers.get("user-login")
+    if not login: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Укажите логин")
+
+    password = request.headers.get("user-password")
+    if not password: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Укажите пароль")
+
+    public_key = request.headers.get("user-public-key")
+    if not public_key: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="public_key is null")
+
+    cursor.execute("SELECT password FROM students WHERE login = ?", (login,))
+    result = cursor.fetchone()
+    if not result: return
+    valid_password = result[0]
+    if password == valid_password:
+        cursor.execute("UPDATE students SET public_key = ? WHERE login = ?", (public_key, login))
+    else: return
 
 @app.on_event("shutdown")
 async def shutdown():

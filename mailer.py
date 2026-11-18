@@ -1,11 +1,8 @@
 
 import os
-from io import BytesIO
 from dotenv import load_dotenv
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 load_dotenv()
-
-import asyncio
 
 EXCEL_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
