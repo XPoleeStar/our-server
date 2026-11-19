@@ -1,0 +1,39 @@
+body {
+    font: 1rem/1.5 sans-serif;
+    max-width: 45rem;
+}
+
+p, li {
+    margin: 0.3rem 0;
+}
+
+p, li, ol, ul {
+    font-weight: normal;
+    color: #000;
+}
+
+ol, ul {
+    padding-left: 1rem;
+}
+
+ol {
+    counter-reset: item;
+    list-style: none;
+}
+
+ul {
+    list-style-position: inside;
+}
+
+ol > li {
+    counter-increment: item;
+}
+
+ol > li::before {
+    content: counters(item, ".") ". ";
+}
+
+body > ol > li, a {
+    font-weight: bold;
+    color: #004890;
+}
